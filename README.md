@@ -16,3 +16,43 @@ You can get a VPS from just $1/month at [VirMach](https://billing.virmach.com/af
 ### Donations
 
 If you want to show your appreciation, you can donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBAYDL34Z7J6L) or [cryptocurrency](https://pastebin.com/raw/M2JJpQpC). Thanks!
+
+### Start/Stop/Status OpenVPN 
+
+```bash
+systemctl start openvpn@server.service
+systemctl stop openvpn@server.service
+systemctl restart openvpn@myvpn.service
+systemctl status openvpn@server.service
+```
+
+### Working config of /etc/openvpn/server.conf for internal networking
+
+```bash
+port 1194
+proto udp
+dev tun
+sndbuf 0
+rcvbuf 0
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+auth SHA512
+tls-auth ta.key 0
+topology subnet
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 8.8.8.8"
+push "dhcp-option DNS 8.8.4.4"
+keepalive 10 120
+cipher AES-256-CBC
+user nobody
+group nogroup
+persist-key
+persist-tun
+status openvpn-status.log
+verb 3
+crl-verify crl.pem
+```
